@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Memory Match</title>
+<style>
+  body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0f1724;color:#e2e8f0;font-family:system-ui}
+  .wrap{width:320px;padding:18px;background:linear-gradient(180deg,#071029,#072f3f);border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+  h1{margin:0 0 8px;font-size:1.1rem;text-align:center}
+  #grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+  .card{width:64px;height:64px;border-radius:8px;background:#0b1221;display:flex;align-items:center;justify-content:center;font-size:28px;cursor:pointer;user-select:none}
+  .back{background:#e11d48;color:white}
+  .info{display:flex;justify-content:space-between;margin-top:10px;font-size:.9rem}
+  .btn{background:transparent;border:1px solid rgba(255,255,255,.12);color:#cfe8ff;padding:6px 8px;border-radius:6px;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Memory Match</h1>
+  <div id="grid"></div>
+  <div class="info">
+    <div>Moves: <span id="moves">0</span></div>
+    <div><button id="shuffleBtn" class="btn">Shuffle</button></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const symbols = ['🍎','🍋','🍇','🍓','🍊','🍐','🍉','🍌'];
+  let deck = [];
+  let first = null, second = null;
+  let lock = false, moves = 0, matches = 0;
+  const grid = document.getElementById('grid');
+  const movesEl = document.getElementById('moves');
+  const shuffleBtn = document.getElementById('shuffleBtn');
+
+  function buildDeck(){
+    deck = symbols.concat(symbols).slice(0,16); // ensure 8 pairs
+    shuffle(deck);
+  }
+  function shuffle(a){
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+  }
+  function render(){
+    grid.innerHTML = '';
+    deck.forEach((s, idx) => {
+      const d = document.createElement('div');
+      d.className = 'card';
+      d.dataset.idx = idx;
+      d.innerHTML = `<div class="face front" style="display:block;width:100%;height:100%;align-items:center;justify-content:center;display:flex">${s}</div>`;
+      d.addEventListener('click', onClick);
+      grid.appendChild(d);
+    });
+    // hide faces after small delay
+    grid.querySelectorAll('.card .front').forEach(el=>{
+      el.style.visibility='hidden';
+    });
+  }
+
+  function onClick(e){
+    if(lock) return;
+    const card = e.currentTarget;
+    const idx = +card.dataset.idx;
+    if(card.classList.contains('matched') || card === first) return;
+
+    reveal(card, deck[idx]);
+
+    if(!first){
+      first = card;
+    } else {
+      second = card;
+      lock = true;
+      moves++;
+      movesEl.textContent = moves;
+      const a = deck[+first.dataset.idx], b = deck[+second.dataset.idx];
+      if(a === b){
+        first.classList.add('matched'); second.classList.add('matched');
+        matches++;
+        resetTurn();
+        if(matches === deck.length/2){
+          setTimeout(()=> alert('You won in ' + moves + ' moves!'), 200);
+        }
+      } else {
+        setTimeout(()=>{
+          hide(first); hide(second); resetTurn();
+        }, 700);
+      }
+    }
+  }
+
+  function reveal(card, symbol){
+    card.innerHTML = `<div style="font-size:28px">${symbol}</div>`;
+    card.style.background = '#10b981'; card.style.color = '#041014';
+  }
+  function hide(card){
+    card.innerHTML = `<div class="front" style="visibility:hidden"></div>`;
+    card.style.background = '#0b1221'; card.style.color = 'transparent';
+  }
+  function resetTurn(){ first = null; second = null; lock = false; }
+
+  shuffleBtn.addEventListener('click', start);
+  function start(){
+    buildDeck();
+    shuffle(deck);
+    moves = 0; matches = 0;
+    movesEl.textContent = moves;
+    render();
+  }
+
+  start();
+})();
+</script>
+</body>
+</html>

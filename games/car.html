@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Car Racing Game</title>
+<style>
+body { margin:0; background:#222; overflow:hidden; }
+canvas { display:block; margin:auto; background:#333; }
+</style>
+</head>
+<body>
+<canvas id="gameCanvas" width="400" height="600"></canvas>
+
+<script>
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+
+let car = { x: 175, y: 500, width: 50, height: 100, speed: 5 };
+let obstacles = [];
+let score = 0;
+let gameOver = false;
+
+document.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowLeft" && car.x > 0) car.x -= car.speed * 2;
+    if (e.key === "ArrowRight" && car.x < canvas.width - car.width) car.x += car.speed * 2;
+});
+
+function spawnObstacle() {
+    let x = Math.random() * (canvas.width - 50);
+    obstacles.push({ x, y: -100, width: 50, height: 100, speed: 3 });
+}
+
+function update() {
+    if (gameOver) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw Car
+    ctx.fillStyle = "red";
+    ctx.fillRect(car.x, car.y, car.width, car.height);
+
+    // Update & Draw Obstacles
+    ctx.fillStyle = "yellow";
+    obstacles.forEach((obs, i) => {
+        obs.y += obs.speed;
+        ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
+
+        // Collision detection
+        if (
+            car.x < obs.x + obs.width &&
+            car.x + car.width > obs.x &&
+            car.y < obs.y + obs.height &&
+            car.height + car.y > obs.y
+        ) {
+            gameOver = true;
+            alert("Game Over! Your score: " + score);
+            document.location.reload();
+        }
+
+        if (obs.y > canvas.height) {
+            obstacles.splice(i, 1);
+            score++;
+        }
+    });
+
+    // Score
+    ctx.fillStyle = "white";
+    ctx.font = "20px Arial";
+    ctx.fillText("Score: " + score, 10, 20);
+
+    requestAnimationFrame(update);
+}
+
+// Spawn obstacle every 1.5 seconds
+setInterval(spawnObstacle, 1500);
+update();
+</script>
+</body>
+</html>

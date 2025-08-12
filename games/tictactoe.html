@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Tic Tac Toe</title>
+<style>
+  body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#071129;color:#e6f0ff;font-family:system-ui}
+  .wrap{width:320px;padding:16px;border-radius:10px;background:linear-gradient(180deg,#05212e,#063046);box-shadow:0 10px 30px rgba(0,0,0,.5);text-align:center}
+  h1{margin:4px 0 8px;font-size:1.1rem}
+  #board{display:grid;grid-template-columns:repeat(3,100px);gap:8px;justify-content:center}
+  .cell{width:100px;height:100px;background:#071a27;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:40px;cursor:pointer;user-select:none}
+  .status{margin-top:12px}
+  .btn{margin-top:10px;padding:6px 12px;border-radius:8px;border:1px solid rgba(255,255,255,.08);background:transparent;color:#cfe8ff;cursor:pointer}
+  @media(max-width:360px){#board{grid-template-columns:repeat(3,88px)}.cell{width:88px;height:88px;font-size:36px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Tic Tac Toe</h1>
+  <div id="board"></div>
+  <div class="status" id="status">Turn: X</div>
+  <button id="reset" class="btn">Restart</button>
+</div>
+
+<script>
+(function(){
+  const boardEl = document.getElementById('board');
+  const statusEl = document.getElementById('status');
+  const resetBtn = document.getElementById('reset');
+  let board = Array(9).fill(null);
+  let turn = 'X';
+  let finished = false;
+
+  function render(){
+    boardEl.innerHTML = '';
+    board.forEach((val, idx)=>{
+      const c = document.createElement('div');
+      c.className = 'cell';
+      c.dataset.i = idx;
+      c.textContent = val ? val : '';
+      c.addEventListener('click', onCell);
+      boardEl.appendChild(c);
+    });
+    statusEl.textContent = finished ? 'Game over' : `Turn: ${turn}`;
+  }
+
+  function onCell(e){
+    const i = +e.currentTarget.dataset.i;
+    if(board[i] || finished) return;
+    board[i] = turn;
+    if(checkWin(turn)){
+      statusEl.textContent = `${turn} wins!`;
+      finished = true;
+      render();
+      setTimeout(()=> alert(`${turn} wins!`), 100);
+      return;
+    }
+    if(board.every(Boolean)){
+      finished = true;
+      statusEl.textContent = 'Draw!';
+      setTimeout(()=> alert('Draw!'), 100);
+      render();
+      return;
+    }
+    turn = turn === 'X' ? 'O' : 'X';
+    render();
+  }
+
+  function checkWin(p){
+    const lines = [
+      [0,1,2],[3,4,5],[6,7,8],
+      [0,3,6],[1,4,7],[2,5,8],
+      [0,4,8],[2,4,6]
+    ];
+    return lines.some(line => line.every(i => board[i] === p));
+  }
+
+  resetBtn.addEventListener('click', ()=>{
+    board = Array(9).fill(null); turn = 'X'; finished = false; render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

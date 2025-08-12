@@ -1,0 +1,14 @@
+[
+  {
+    "title": "Car Racing",
+    "image": "assets/images/car.png",
+    "category": "Racing",
+    "url": "games/car-racing/index.html"
+  },
+  {
+    "title": "Puzzle Master",
+    "image": "assets/images/puzzle.png",
+    "category": "Puzzle",
+    "url": "games/puzzle-master/index.html"
+  }
+]

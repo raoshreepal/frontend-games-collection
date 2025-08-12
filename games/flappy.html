@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Flappy Bird</title>
+<style>
+    body { background: skyblue; margin: 0; display: flex; justify-content: center; align-items: center; }
+    canvas { background: #70c5ce; }
+</style>
+</head>
+<body>
+<canvas id="bird" width="320" height="480"></canvas>
+<script>
+let cvs = document.getElementById("bird");
+let ctx = cvs.getContext("2d");
+
+let birdY = 150, birdX = 50, gravity = 2, lift = -30, velocity = 0;
+let pipes = [{x: 320, y: Math.floor(Math.random()*200)-200}];
+let score = 0;
+
+document.addEventListener("keydown", () => velocity = lift);
+
+function draw() {
+    ctx.fillStyle = "#70c5ce";
+    ctx.fillRect(0,0,320,480);
+
+    velocity += gravity;
+    birdY += velocity * 0.5;
+    ctx.fillStyle = "yellow";
+    ctx.fillRect(birdX, birdY, 20, 20);
+
+    for(let i=0; i<pipes.length; i++) {
+        ctx.fillStyle = "green";
+        ctx.fillRect(pipes[i].x, pipes[i].y, 50, 320);
+        ctx.fillRect(pipes[i].x, pipes[i].y+400, 50, 320);
+        pipes[i].x -= 2;
+
+        if (pipes[i].x === 150) {
+            pipes.push({x: 320, y: Math.floor(Math.random()*200)-200});
+        }
+        if (birdX+20 > pipes[i].x && birdX < pipes[i].x+50 && 
+            (birdY < pipes[i].y+320 || birdY+20 > pipes[i].y+400)) {
+            alert("Game Over!");
+            location.reload();
+        }
+        if (pipes[i].x+50 < birdX && !pipes[i].passed) {
+            score++;
+            pipes[i].passed = true;
+        }
+    }
+
+    ctx.fillStyle = "black";
+    ctx.font = "20px Arial";
+    ctx.fillText("Score: " + score, 10, 20);
+
+    if (birdY > 480) { alert("Game Over!"); location.reload(); }
+}
+
+setInterval(draw, 20);
+</script>
+</body>
+</html>

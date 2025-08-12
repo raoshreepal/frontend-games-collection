@@ -1,0 +1,97 @@
+/* assets/css/style.css */
+
+/* Reset-ish */
+* { box-sizing: border-box; }
+html,body { height: 100%; margin: 0; font-family: "Segoe UI", Roboto, Arial, sans-serif; }
+
+/* Body background & default text */
+body {
+  background: #f7f8fa;
+  color: #222;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Navbar tweaks */
+.navbar-brand { font-weight: 700; letter-spacing: 0.6px; }
+.navbar .nav-link { color: rgba(255,255,255,0.9) !important; }
+.navbar-dark .navbar-nav .nav-link:hover { color: #ffd166 !important; }
+
+/* Hero */
+section.bg-primary {
+  background: linear-gradient(135deg,#0d6efd 0%, #6610f2 100%);
+  color: #fff;
+  border-bottom-left-radius: 18px;
+  border-bottom-right-radius: 18px;
+}
+section.bg-primary h1 { font-size: 2.2rem; margin-bottom: .25rem; }
+section.bg-primary p { opacity: .95; margin-bottom: 0; }
+
+/* Featured cards */
+.card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(32,40,60,0.07);
+  overflow: hidden;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.card:hover { transform: translateY(-6px); box-shadow: 0 18px 40px rgba(32,40,60,0.12); }
+.card-img-top {
+  height: 160px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Card body */
+.card-body h5 { font-size: 1.05rem; margin-bottom: .6rem; }
+.card-body .btn { font-weight: 600; }
+
+/* Game listing toolbar (search / filters) */
+.games-toolbar {
+  display:flex;
+  gap:10px;
+  align-items:center;
+  margin-bottom: 1rem;
+  flex-wrap:wrap;
+}
+.games-toolbar .form-control { min-width:200px; }
+
+/* Responsive iframe for embedded game */
+.embed-responsive {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 ratio */
+  height: 0;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 8px 30px rgba(10,10,20,0.06);
+}
+.embed-responsive iframe {
+  position: absolute;
+  top:0; left:0;
+  width:100%;
+  height:100%;
+  border:0;
+}
+
+/* Footer */
+.site-footer {
+  background:#0f1724;
+  color: #cbd5e1;
+  padding: 28px 0;
+  margin-top: 48px;
+  border-top: 4px solid rgba(255,255,255,0.02);
+}
+.site-footer a { color: #9fb4ff; text-decoration: none; }
+.site-footer a:hover { text-decoration: underline; }
+
+/* Utilities */
+.container { max-width: 1140px; }
+.text-center { text-align: center; }
+
+/* Mobile tweaks */
+@media (max-width: 575px) {
+  .card-img-top { height: 140px; }
+  section.bg-primary h1 { font-size: 1.6rem; }
+  .games-toolbar { gap:8px; }
+}

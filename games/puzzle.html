@@ -1,0 +1,67 @@
+Puzzle <!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Puzzle Master</title>
+<style>
+body { background:#222; color:white; text-align:center; font-family:Arial; }
+#puzzle { display:grid; grid-template-columns: repeat(3, 100px); grid-gap:5px; margin:50px auto; }
+.tile { width:100px; height:100px; background:#555; display:flex; justify-content:center; align-items:center; font-size:24px; cursor:pointer; }
+.empty { background:#222; cursor:default; }
+</style>
+</head>
+<body>
+<h1>Sliding Puzzle</h1>
+<div id="puzzle"></div>
+<p id="moves">Moves: 0</p>
+
+<script>
+let tiles = [1,2,3,4,5,6,7,8,""];
+let moves = 0;
+
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+shuffle(tiles);
+
+function render() {
+    const puzzle = document.getElementById("puzzle");
+    puzzle.innerHTML = "";
+    tiles.forEach((num, i) => {
+        let tile = document.createElement("div");
+        tile.className = "tile";
+        if (num === "") {
+            tile.classList.add("empty");
+        } else {
+            tile.textContent = num;
+            tile.addEventListener("click", () => moveTile(i));
+        }
+        puzzle.appendChild(tile);
+    });
+}
+
+function moveTile(index) {
+    const emptyIndex = tiles.indexOf("");
+    const validMoves = [emptyIndex - 1, emptyIndex + 1, emptyIndex - 3, emptyIndex + 3];
+    if (validMoves.includes(index)) {
+        [tiles[emptyIndex], tiles[index]] = [tiles[index], tiles[emptyIndex]];
+        moves++;
+        document.getElementById("moves").textContent = "Moves: " + moves;
+        render();
+        checkWin();
+    }
+}
+
+function checkWin() {
+    if (tiles.join("") === "12345678") {
+        setTimeout(() => alert("🎉 You solved the puzzle in " + moves + " moves!"), 100);
+    }
+}
+
+render();
+</script>
+</body>
+</html>
